@@ -15,33 +15,37 @@ import java.util.List;
 public class Application {
 
     public static void main(String[] args) {
-        ConfigurableApplicationContext context =
-                SpringApplication.run(Application.class, args);
-
-        RestController restController = context.getBean("restController",
-                RestController.class);
-
+        //Создание ApplicationContext
+        ConfigurableApplicationContext context = SpringApplication.run(Application.class, args);
+        //Получение бина restController'а
+        RestController restController = context.getBean("restController", RestController.class);
+        //Создание http заголовков
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
 
+        // Получение куков из первого запроса
         List<String> cookies = restController.getAllUsers(new HttpEntity<>(httpHeaders));
-        System.out.println(cookies);
-
+        System.out.println("Куки: " + cookies);
+        // Вставка полученных куков в http заголовок
         httpHeaders.set("Cookie", String.join(";", cookies));
 
+        //Новый пользователь
         User newUser = new User(3L, "James", "Brown", (byte) 30);
-
+        //Создание нового httpEntity с пользователем и куками
         HttpEntity<User> httpEntity = new HttpEntity<>(newUser, httpHeaders);
-
+        //Добавление нового пользователя
         restController.addUser(httpEntity);
 
+        //Замена параметров пользователя
         newUser.setName("Thomas");
         newUser.setLastName("Shelby");
-
+        //Редактирование пользователя
         restController.editUser(httpEntity);
 
+        //Удаление пользователя
         restController.deleteUser(httpEntity, 3);
 
-        System.out.println(restController.getCode());
+        //Полученный результат
+        System.out.println("Полученный результат: " + restController.getCode());
     }
 }

@@ -8,7 +8,11 @@ import org.springframework.web.client.RestTemplate;
 @Configuration
 @ComponentScan("com.example.spring_rest_template_demo")
 public class ApplicationConfig {
-
+    /**
+     * Создание бина RestTemplate
+     *
+     * @return RestTemplate
+     */
     @Bean
     public RestTemplate restTemplate() {
         return new RestTemplate();
